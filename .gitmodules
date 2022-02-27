@@ -10,3 +10,12 @@
 [submodule "source/vendors/ImGui.NET"]
 	path = source/vendors/ImGui.NET
 	url = https://github.com/OrkEngine/ImGui.NET.git
+[submodule "source/vendor"]
+	path = source/vendor
+	url = https://github.com/OrkEngine/NAudio
+[submodule "source/vendors/NAudio"]
+	path = source/vendors/NAudio
+	url = https://github.com/OrkEngine/NAudio
+[submodule "source/vendors/CSCore"]
+	path = source/vendors/CSCore
+	url = https://github.com/OrkEngine/cscore

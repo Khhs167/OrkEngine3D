@@ -10,7 +10,10 @@
             "args": [],
             "cwd": "${workspaceFolder}/source/OrkEngine3D.Graphics.Tests/bin/Debug/net6.0/",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
         },
         {
             // Use IntelliSense to find out which attributes exist for C# debugging

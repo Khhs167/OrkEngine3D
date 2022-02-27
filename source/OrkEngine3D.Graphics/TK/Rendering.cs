@@ -1,4 +1,5 @@
 ﻿using OrkEngine3D.Components.Core;
+using OrkEngine3D.Diagnostics.Logging;
 using OrkEngine3D.Graphics.TK.Resources;
 using OrkEngine3D.Mathematics;
 using System;
@@ -19,6 +20,9 @@ namespace OrkEngine3D.Graphics.TK
         public static Material[] currentMaterials { get; private set; } = new Material[] { new Material() };
         public static IRenderable currentRenderObject { get; private set; }
         public static GLResourceManager currentResourceManager { get; private set; }
+        public static PostProcessingEffect currentPostProcessingEffect { get; private set; }
+        public static bool isRendering { get; private set; }
+        private static Logger LOGGER = Logger.Get("Rendering API", "Graphics");
 
         public static void BindCamera(Camera camera)
         {
@@ -53,6 +57,7 @@ namespace OrkEngine3D.Graphics.TK
         public static void BindTarget(ID id)
         {
             renderTarget = (IRenderTarget)currentResourceManager.GetResource(id);
+            renderTarget.BindTarget();
         }
 
         public static void ResetTarget()
@@ -70,8 +75,35 @@ namespace OrkEngine3D.Graphics.TK
             currentContext.SwapBuffers();
         }
 
+        public static void Begin(){
+            if(isRendering){
+                LOGGER.Log(LogMessageType.ERROR, "Cannot begin rendering twice!");
+            } else {
+                if(currentPostProcessingEffect != null)
+                    currentPostProcessingEffect.PreRender();
+                isRendering = true;
+            }
+            
+        }
+
         public static void Render(){
-            currentRenderObject.Render();
+            if(!isRendering){
+                LOGGER.Log(LogMessageType.ERROR, "Cannot render object if no rendering is in progress!");
+            } else {
+                currentRenderObject.Render();
+            }
+        }
+
+        public static void End(){
+            if(isRendering) {
+                if(currentPostProcessingEffect != null) {
+                    Rendering.ResetTarget();
+                    currentPostProcessingEffect.Render();
+                }
+                isRendering = false;
+            } else {
+                LOGGER.Log(LogMessageType.ERROR, "Cannot end non-begun rendering session!");
+            }
         }
 
         public static void BindRenderable(ID id){
@@ -142,6 +174,19 @@ namespace OrkEngine3D.Graphics.TK
         public static ID CreateRenderBuffer(int width, int height){
             RenderBuffer renderBuffer = new RenderBuffer(currentResourceManager, width, height);
             return renderBuffer.resourceid;
+        }
+
+        public static ID CreatePostProcessingEffect(string shader){
+            PostProcessingEffect effect = new PostProcessingEffect(currentResourceManager, shader, currentContext.window.Size.X, currentContext.window.Size.Y);
+            return effect.resourceid;
+        }
+
+        public static void BindPostProcessingEffect(ID id){
+            currentPostProcessingEffect = currentResourceManager.GetResource<PostProcessingEffect>(id);
+        }
+
+        public static void UnbindPostProcessingEffect(){
+            currentPostProcessingEffect = null;
         }
     }
 }

@@ -80,21 +80,26 @@ namespace OrkEngine3D.Graphics.Tests
             lscene = new LightScene();
             Rendering.BindLightning(lscene);
 
+            ppe  = Rendering.CreatePostProcessingEffect(File.ReadAllText("resources/post.frag"));
+
         }
+        ID ppe;
 
         public override void Render()
         {
             Rendering.ResetTarget();
             Rendering.ClearTarget();
 
+            Rendering.BindPostProcessingEffect(ppe);
 
+            Rendering.Begin();
+            
             Rendering.BindTransform(cubeTransform);
             Rendering.BindRenderable(cubeMesh);
+
             Rendering.Render();
 
-            //Rendering.BindTransform(teapotTransform);
-            //teapotMesh.Render();
-
+            Rendering.End();
             Rendering.SwapBuffers();
         }
         float t = 0;
