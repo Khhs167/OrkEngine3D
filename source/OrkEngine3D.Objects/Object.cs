@@ -3,28 +3,28 @@
 public class Object : ICloneable
 {
     public string Name;
-    public string ID;
+    public string Id;
 
     private static readonly ObjectPool Pool = new ObjectPool();
 
     public static Object Instantiate(Object template)
     {
         Object o = (Object)template.Clone();
-        o.ID = Pool.AddObject(o);
+        o.Id = Pool.AddObject(o);
         return o;
     }
     
-    public static Object Instantiate<T>() where T : Object, new()
+    public static T Instantiate<T>() where T : Object, new()
     {
-        Object o = new T();
-        o.ID = Pool.AddObject(o);
+        T o = new T();
+        o.Id = Pool.AddObject(o);
         return o;
     }
 
-    private Object()
+    private protected Object()
     {
         this.Name = "";
-        this.ID = "";
+        this.Id = "";
     }
 
 

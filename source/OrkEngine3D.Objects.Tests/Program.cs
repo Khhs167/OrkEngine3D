@@ -1,3 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using OrkEngine3D.Objects;
+using OrkEngine3D.Objects.Game;
+using Object = OrkEngine3D.Objects.Object;
 
-Console.WriteLine("Hello, World!");
+ScriptedObject o = Object.Instantiate<ScriptedObject>();
